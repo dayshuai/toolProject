@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ssm.mapper.DatabasesPushDAO" >
+    
+  <select id="getAttachFilepaths" resultType="java.lang.String">
+  		select distinct file_path
+  		from p_file_manage 
+  		where (is_annex_flg is null or is_annex_flg = '2') and file_status = '1' 
+  </select>
+  <update id="updateAnnexflgSucceed"  parameterType="java.lang.String">
+  		update p_file_manage set is_annex_flg = '1'
+  		where (is_annex_flg != '1' or is_annex_flg is null) and file_status = '1'
+  </update>
+  <update id="updateAnnexflgFailed"  parameterType="java.lang.String">
+  		update p_file_manage set is_annex_flg = '2'
+  		where (is_annex_flg = '0' or is_annex_flg is null) and file_status = '1'
+  </update>
+  
+  <select id="getTradingDays" resultType="java.lang.String" parameterType="java.util.Map">
+  		select open_date from p_openday where workflag = '1' order by open_date asc;
+  </select>
+  
+  <!-- 20160808-代码修改-start by zhaofeng -->
+  <update id="updateFtpPushflg" parameterType="java.util.Map">
+  		update ${tableName} set is_push_flg = #{pushFlag}, push_time = now()
+  </update>
+  <select id="findTableDatas" resultType="java.util.Map" parameterType="java.util.Map">
+  		select ${tableCols} from ${tableName} 
+  		<trim prefix="where" prefixOverrides="and |or ">
+  			<if test="pushFlag != null and pushFlag != ''">
+  				is_push_flg = #{pushFlag}
+  			</if>
+  		</trim>
+  		order by #{primaryKey}
+  </select>
+  
+  
+  <select id="findTableDataByPrimaryValue" resultType="java.util.Map" parameterType="java.util.Map">
+  		select ${tableCols} from ${tableName} where 1=1 
+  				<!-- mybatis return null 故采用拼接sql -->
+  				${sql}
+  		limit 1
+  </select>
+  <!-- 20160808-代码修改-end by zhaofeng -->
+  
+  
+  <select id="findTableDatasWithLimit" resultType="java.util.Map" parameterType="java.util.Map">
+  		select * from ${tableName} 
+  		<trim prefix="where" prefixOverrides="and |or ">
+  			<if test="pushFlag != null and pushFlag != ''">
+  				is_push_flg = #{pushFlag}
+  			</if>
+  		</trim>
+  		limit #{startIndex},#{endIndex}
+  </select>
+  
+  <select id="selectCountTableDatas" resultType="java.lang.String" parameterType="java.util.Map">
+  		select count(1) from ${tableName} 
+  		<trim prefix="where" prefixOverrides="and |or ">
+  			<if test="pushFlag != null and pushFlag != ''">
+  				is_push_flg = #{pushFlag}
+  			</if>
+  			<if test="primaryKey != null and primaryKey != ''">
+  				order by #{primaryKey}
+  			</if>
+  		</trim>
+  		
+  </select>
+</mapper>

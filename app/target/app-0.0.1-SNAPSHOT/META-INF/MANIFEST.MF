@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Build-Jdk: 1.7.0_79
+Built-By: huangcheng19079
+Created-By: Apache Maven 3.3.9
+Main-Class: com.ssm.app.CompareRun
+Archiver-Version: Plexus Archiver
+

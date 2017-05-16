@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssm.mapper.PDatabaseColumnConfigDAO">
+	
+	<resultMap type="com.ssm.bean.PDatabaseColumnConfig" id="BaseResultMap">
+		<id column="id" property="id" />
+		<result column="table_name" property="tableName"/>
+		<result column="column_name" property="columnName"/>
+		<result column="table_order" property="tableOrder"/>
+		<result column="column_type" property="columnType"/>
+		<result column="column_comment" property="columnComment"/>
+		<result column="column_width" property="columnWidth"/>
+		
+	</resultMap>
+	
+	<sql id="Base_Column_List">
+		id,table_name,column_name,table_order,column_type,column_comment,column_width
+	</sql>
+	
+	<sql id="Where_Column_List">
+		<if test="tableName!=null and tableName!=''">
+			AND table_name = #{tableName}
+		</if>
+		<if test="columnName!=null and columnName!=''">
+			AND column_name = #{columnName}
+		</if>
+		<if test="tableOrder!=null and tableOrder!=''">
+			AND table_order = #{tableOrder}
+		</if>
+		<if test="columnType!=null and columnType!=''">
+			AND column_type = #{columnType}
+		</if>
+		<if test="columnComment!=null and columnComment!=''">
+			AND column_comment = #{columnComment}
+		</if>
+		<if test="columnWidth!=null and columnWidth!=''">
+			AND column_width = #{columnWidth}
+		</if>
+  	</sql>
+	
+	<insert id="insert" parameterType="com.ssm.bean.PDatabaseColumnConfig" useGeneratedKeys = "true" keyProperty = "id">
+		INSERT INTO p_database_column_config (table_name,column_name,table_order,column_type,column_comment,column_width)
+		VALUES (#{tableName},#{columnName},#{tableOrder},#{columnType},#{columnComment},#{columnWidth})
+	</insert>
+	
+	<insert id="insertSelective" parameterType="com.ssm.bean.PDatabaseColumnConfig" useGeneratedKeys = "true" keyProperty = "id">
+		INSERT INTO p_database_column_config 
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+			<if test="tableName != null" >
+        		table_name,
+      		</if>
+			<if test="columnName != null" >
+        		column_name,
+      		</if>
+			<if test="tableOrder != null" >
+        		table_order,
+      		</if>
+			<if test="columnType != null" >
+        		column_type,
+      		</if>
+			<if test="columnComment != null" >
+        		column_comment,
+      		</if>
+			<if test="columnWidth != null" >
+        		column_width,
+      		</if>
+	    </trim>
+    	<trim prefix="values (" suffix=")" suffixOverrides="," >
+               	<if test="tableName != null">
+				#{tableName},
+				</if>
+               	<if test="columnName != null">
+				#{columnName},
+				</if>
+               	<if test="tableOrder != null">
+				#{tableOrder},
+				</if>
+               	<if test="columnType != null">
+				#{columnType},
+				</if>
+               	<if test="columnComment != null">
+				#{columnComment},
+				</if>
+               	<if test="columnWidth != null">
+				#{columnWidth},
+				</if>
+		</trim>
+	</insert>
+	
+	<update id="updateById" parameterType="com.ssm.bean.PDatabaseColumnConfig">
+		UPDATE p_database_column_config
+ 		SET table_name=#{tableName},column_name=#{columnName},table_order=#{tableOrder},column_type=#{columnType},column_comment=#{columnComment},column_width=#{columnWidth}
+		WHERE id=#{id}
+	</update>
+	
+	<update id="updateIdKeySelective" parameterType="com.ssm.bean.PDatabaseColumnConfig">
+		UPDATE p_database_column_config
+ 		<set>
+ 			<if test="tableName != null" >
+ 				table_name=#{tableName},
+ 			</if>
+ 			<if test="columnName != null" >
+ 				column_name=#{columnName},
+ 			</if>
+ 			<if test="tableOrder != null" >
+ 				table_order=#{tableOrder},
+ 			</if>
+ 			<if test="columnType != null" >
+ 				column_type=#{columnType},
+ 			</if>
+ 			<if test="columnComment != null" >
+ 				column_comment=#{columnComment},
+ 			</if>
+ 			<if test="columnWidth != null" >
+ 				column_width=#{columnWidth},
+ 			</if>
+ 		</set>
+		WHERE id=#{id}
+	</update>
+
+	<delete id="deleteById" parameterType="java.lang.Long">
+		DELETE FROM p_database_column_config WHERE id=#{value}
+	</delete>
+
+	<select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		SELECT <include refid="Base_Column_List"/> FROM p_database_column_config WHERE id=#{value} LIMIT 0,1
+	</select>
+	
+	
+	<select id="querySyncTableList" resultMap="BaseResultMap">
+		SELECT <include refid="Base_Column_List"/> FROM p_database_column_config group by table_name
+	</select>
+	
+	<select id="queryColumnList" resultMap="BaseResultMap" parameterType="java.lang.String">
+		SELECT <include refid="Base_Column_List"/> FROM p_database_column_config where table_name=#{tableName} order by id;
+	</select>
+	
+	<select id="queryTableListForSup" resultType="java.lang.String" parameterType="java.util.Map">
+		SELECT distinct(table_name) FROM ${tableName} group by table_name
+	</select>
+	
+	<select id="queryColumnListForSup" resultMap="BaseResultMap" parameterType="java.util.Map">
+		SELECT <include refid="Base_Column_List"/> FROM ${tableName} where table_name=#{configtableName} order by id;
+	</select>
+	
+</mapper>

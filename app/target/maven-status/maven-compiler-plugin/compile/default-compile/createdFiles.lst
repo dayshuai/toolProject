@@ -1,0 +1,7 @@
+com\ssm\bean\PDatabaseColumnConfig.class
+com\ssm\app\CCRDFile.class
+com\ssm\app\SupScnyTool.class
+com\ssm\app\CompareRun.class
+com\ssm\mapper\PDatabaseColumnConfigDAO.class
+com\ssm\mapper\DatabasesPushDAO.class
+com\ssm\app\CompareRunWithRunnable.class
