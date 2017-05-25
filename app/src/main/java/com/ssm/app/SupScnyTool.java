@@ -1,19 +1,12 @@
 package com.ssm.app;
 
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.apache.commons.lang3.StringUtils;
 
 import com.ssm.bean.PDatabaseColumnConfig;
-import com.ssm.mapper.DatabasesPushDAO;
-import com.ssm.mapper.PDatabaseColumnConfigDAO;
 
 public class SupScnyTool {
 	/** 日志管理 */
@@ -31,24 +24,20 @@ public class SupScnyTool {
 		getCommonTableList();
 	}*/
 	public static void main(String[] args) {
-		String str = "啊|";
-		int firstIndex = 0;
-		
-		byte[] bytes;
-		try {
-			bytes = str.getBytes("GB18030");
-			byte[] valueBytes = new byte[2];
-			int valueIndex = 0;
-			for (int j = firstIndex; j < firstIndex + 2; j++) {
-				valueBytes[valueIndex] = bytes[j];
-				valueIndex++;
-			}
-			// 得到一列的值
-			String value = new String(valueBytes, "GB18030");
-			System.out.println(value);
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+		String str = "ss VARCHAR2(3) 22(3)";
+		Pattern pattern = Pattern.compile("VARCHAR2\\((\\d+)\\)");
+		Matcher matcher = pattern.matcher(str);
+		if (matcher.find()) {
+			String tbName = matcher.group(1);
+			String bb = str.replaceAll("VARCHAR2\\((\\d+)\\)", "VARCHAR2(" + 2 * Integer.valueOf(tbName) + ")");
+			
+			System.out.println(tbName + "|" + bb);
 		}
+		
+		/*if(str.contains("VARCHAR2")){
+			int index = str.indexOf("VARCHAR2(");
+			System.out.println(index);
+		}*/
 		
 		
 		/*for(String table : commonTableList){

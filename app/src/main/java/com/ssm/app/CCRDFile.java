@@ -5,11 +5,11 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CCRDFile {
 	// 验证字符串是否为正确路径名的正则表达式
@@ -167,6 +167,42 @@ public class CCRDFile {
 			}
 		}
 	}
+	
+	public static void copyReplaceFile(String fromFilePath, String toFilePath) throws Exception {
+		BufferedReader br = null;
+		BufferedWriter bw = null;
+		try {
+			File toFile = new File(toFilePath);
+			if (!toFile.exists()) {
+				System.out.println("produceFile不存在");
+				throw new Exception();
+			}
+			File fromFile = new File(fromFilePath);
+			if (!fromFile.exists()) {
+				System.out.println("fromFile不存在");
+				throw new Exception();
+			}
+			String str = null;
+			FileInputStream fis = new FileInputStream(fromFile);
+			br = new BufferedReader(new InputStreamReader(fis, "UTF-8"));
+			bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(toFile, true), "UTF-8"));
+			while ((str = br.readLine()) != null) {
+				Pattern pattern = Pattern.compile("VARCHAR2\\((\\d+)\\)");
+				Matcher matcher = pattern.matcher(str);
+				if (matcher.find()) {
+					String tbName = matcher.group(1);
+					str = str.replaceAll("VARCHAR2\\((\\d+)\\)", "VARCHAR2(" + 2 * Integer.valueOf(tbName) + ")");
+					System.out.println(str);
+				}
+				bw.write(str);
+				bw.newLine();
+			}
+			br.close();
+			bw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
 	public static void copyFile(String fromFilePath, String toFilePath) throws Exception {
 		BufferedReader br = null;
@@ -184,8 +220,8 @@ public class CCRDFile {
 			}
 			String str = null;
 			FileInputStream fis = new FileInputStream(fromFile);
-			br = new BufferedReader(new InputStreamReader(fis, "GB18030"));
-			bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(toFile, true), "GB18030"));
+			br = new BufferedReader(new InputStreamReader(fis, "UTF-8"));
+			bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(toFile, true), "UTF-8"));
 			while ((str = br.readLine()) != null) {
 				bw.write(str);
 				bw.newLine();

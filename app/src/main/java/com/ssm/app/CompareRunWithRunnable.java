@@ -595,6 +595,7 @@ public class CompareRunWithRunnable implements Runnable {
 			e.printStackTrace();
 		}
 	}
+	
 
 	public static void copyTempFileToProduceFile() throws Exception {
 		logger.info("------------------对比完成，开始复制临时文件到produceFile----------------------");
